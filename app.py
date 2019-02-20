@@ -13,6 +13,10 @@ def load_custommodel():
 	global graph
 	graph = tf.get_default_graph()
 
+@app.route("/")
+def funk():
+    return "Server working"
+    
 @app.route("/predict",methods=["POST"])
 def functi():
     if request.method=="POST":
