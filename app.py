@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from keras.models import load_model
 from keras import backend
+from itertools import compress
 import json
 
 app=Flask(__name__)
@@ -29,10 +30,12 @@ def functi():
         input_pred=input_pred.reshape(-1,10)
         model = load_model('model.h5')
         y=model.predict(input_pred)
-        y=y>0.5
+        y=y[0]>0.5
         b=y.tolist()
+        print(b)
+        res = list(compress(range(len(b)), b))
         backend.clear_session()
-        return json.dumps(b)
+        return json.dumps({"prediction":res[0]+1})
 
 if __name__ == '__main__':
     app.run(debug=True)
