@@ -2,16 +2,10 @@ from flask import Flask,request
 import pandas as pd
 import numpy as np
 from keras.models import load_model
+from keras import backend
 import json
-import tensorflow as tf
 
 app=Flask(__name__)
-
-def load_custommodel():
-	global model
-	model = load_model("model.h5")
-	global graph
-	graph = tf.get_default_graph()
 
 @app.route("/")
 def funk():
@@ -33,12 +27,12 @@ def functi():
 
         input_pred=np.array([age,height,weight,totalcal,totalfat,totalprot,totalcarbs,cigarettes,alcohol,caloburnt])
         input_pred=input_pred.reshape(-1,10)
-        with graph.as_default():
-            y=model.predict(input_pred)
-            y=y>0.5
-            b=y.tolist()
-            return json.dumps(b)
+        model = load_model('model.h5')
+        y=model.predict(input_pred)
+        y=y>0.5
+        b=y.tolist()
+        backend.clear_session()
+        return json.dumps(b)
 
 if __name__ == '__main__':
-    load_custommodel()
     app.run(debug=True)
